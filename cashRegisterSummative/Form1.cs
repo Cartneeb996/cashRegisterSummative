@@ -77,7 +77,7 @@ namespace cashRegisterSummative
                 return;
             }
             errorLabel.Text = ""; //clear error text
-            if (drinkInputBox.Text == "" | friesInputBox.Text == "" | burgerInputBox.Text == "") // if the user orders nothing..
+            if (drinkInputBox.Text == "" | friesInputBox.Text == "" | burgerInputBox.Text == "") // if there are any empty values..
             {
                 calculateTotalsButton.Visible = false;
             }
@@ -100,7 +100,7 @@ namespace cashRegisterSummative
             }
 
             errorLabel.Text = ""; // clear error text
-            if (drinkInputBox.Text == "" | friesInputBox.Text == "" | burgerInputBox.Text == "")
+            if (drinkInputBox.Text == "" | friesInputBox.Text == "" | burgerInputBox.Text == "") // if there are any empty values..
             {
                 calculateTotalsButton.Visible = false;
             }
