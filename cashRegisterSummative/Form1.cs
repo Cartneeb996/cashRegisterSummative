@@ -73,7 +73,7 @@ namespace cashRegisterSummative
             {               
                 burgerInputBox.Text = "";
                 clearAll();
-                errorLabel.Text = "That is not a proper number!";
+                errorLabel.Text = "That is not a proper number!"; 
                 return;
             }
             errorLabel.Text = ""; //clear error text
