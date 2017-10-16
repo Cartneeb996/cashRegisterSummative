@@ -16,6 +16,7 @@ namespace cashRegisterSummative
     public partial class cashTown : Form
     {
         //variable setup
+
         const double BURGER_COST = 2.49;
         const double FRIES_COST = 1.89;
         const double DRINK_COST = 0.99;
@@ -30,6 +31,7 @@ namespace cashRegisterSummative
         double change;
         int errorAmount = 0;
         int orderNumber;
+        string input = "";
         int dateD;
         int dateM;
         int dateY;
@@ -38,7 +40,8 @@ namespace cashRegisterSummative
         Font receiptFont = new Font("Consolas", 12);
         SolidBrush receiptBrush = new SolidBrush(Color.Black);
         Pen receiptPen = new Pen(Color.Black);
-        private void clearAll()
+
+        private void clearAll() // method to clear input and labels
         {
             clearOrderButton.Visible = false;
             tenderedInputBox.Visible = false;
@@ -57,7 +60,6 @@ namespace cashRegisterSummative
         public cashTown()
         {
             InitializeComponent();
-            
         }
 
         private void burgerInputBox_TextChanged(object sender, EventArgs e)
@@ -67,7 +69,7 @@ namespace cashRegisterSummative
                 burgerAmount = Convert.ToInt16(burgerInputBox.Text);
                 calculateTotalsButton.Visible = true;
             }
-            catch // display error message, and remove progress option if input is not a number
+            catch // display error message, and clear inputs
             {               
                 burgerInputBox.Text = "";
                 clearAll();
@@ -87,8 +89,7 @@ namespace cashRegisterSummative
             try // accept a value 
             {
                 friesAmount = Convert.ToInt16(friesInputBox.Text);
-                calculateTotalsButton.Visible = true;
-                
+                calculateTotalsButton.Visible = true;             
             }
             catch // display error message, and remove progress option if input is not a number
             {
@@ -122,7 +123,7 @@ namespace cashRegisterSummative
             }
 
                 errorLabel.Text = ""; //clear error text
-            if (drinkInputBox.Text == "" | friesInputBox.Text == "" |  burgerInputBox.Text == "") // if the user orders nothing..
+            if (drinkInputBox.Text == "" || friesInputBox.Text == "" ||  burgerInputBox.Text == "") // if there are any empty values..
             {
                 calculateTotalsButton.Visible = false;
             }
@@ -146,6 +147,7 @@ namespace cashRegisterSummative
                 }
 
                 //clear error text, and display calculated values
+
                 errorLabel.Text = "";
                 subTotalLabel.Text = subTotal.ToString("C");
                 subTotalDescLabel.Visible = true;
@@ -184,12 +186,13 @@ namespace cashRegisterSummative
         {
             try // accept a value
             {
-                amountPaid = Convert.ToInt16(tenderedInputBox.Text); //stores input(payment) into amountPaid variable
+                amountPaid = Convert.ToDouble(tenderedInputBox.Text); //stores input(payment) into amountPaid variable
             }
             catch // display error message if input is not a number
             {
                 errorLabel.Text = "Enter a number!";
                 printReceiptButton.Visible = false;
+                calculateChangeButton.Visible = false;
                 changeLabel.Visible = false;
                 changeDescLabel.Visible = false;
                 return;
@@ -202,6 +205,7 @@ namespace cashRegisterSummative
         private void calculateChangeButton_Click(object sender, EventArgs e)
         {
             //calculate change
+
             change = amountPaid - grandTotal;
 
             if (amountPaid < grandTotal) // if the user is underpaying...
@@ -224,11 +228,24 @@ namespace cashRegisterSummative
         private void printReceiptButton_Click(object sender, EventArgs e)
         {
             //setup for the code
+
             orderNumber = randNum.Next(1, 100000);
             dateD = randNum.Next(01, 30);
             dateM = randNum.Next(1, 12);
             dateY = randNum.Next(2012, 2017);
             Graphics receipt = this.CreateGraphics();
+
+            //make user unable to reprint same receipt, and clears the screen
+
+            clearAll();
+            burgerInputBox.Visible = false;
+            calculateTotalsButton.Visible = false;
+            burgerDescLabel.Visible = false;
+            friesInputBox.Visible = false;
+            friesDescLabel.Visible = false;
+            drinkInputBox.Visible = false;
+            drinkDescLabel.Visible = false;
+            clearOrderButton.Visible = true;
 
             //start to print receipt
 
@@ -241,17 +258,17 @@ namespace cashRegisterSummative
             registerSound.PlaySync();
             receipt.DrawString("", receiptFont, receiptBrush, 245, 95);
             registerSound.PlaySync();
-            receipt.DrawString("Burger(s) x" + burgerAmount + " @ " + BURGER_COST, receiptFont, receiptBrush, 245, 115);
+            receipt.DrawString("Burger(s)  x" + burgerAmount + " @ " + BURGER_COST, receiptFont, receiptBrush, 245, 115);
             registerSound.PlaySync();
-            receipt.DrawString("Fries     x" + friesAmount + " @ " + FRIES_COST, receiptFont, receiptBrush, 245, 135);
+            receipt.DrawString("Fries      x" + friesAmount + " @ " + FRIES_COST, receiptFont, receiptBrush, 245, 135);
             registerSound.PlaySync();
-            receipt.DrawString("Drink(s)  x" + drinkAmount + " @ " + DRINK_COST, receiptFont, receiptBrush, 245, 155);
+            receipt.DrawString("Drink(s)   x" + drinkAmount + " @ " + DRINK_COST, receiptFont, receiptBrush, 245, 155);
             registerSound.PlaySync();
             receipt.DrawString("", receiptFont, receiptBrush, 245, 175);
             registerSound.PlaySync();
             receipt.DrawString("SubTotal      " + subTotal.ToString("C"), receiptFont, receiptBrush, 245, 195);
             registerSound.PlaySync();
-            receipt.DrawString("Tax           " + taxAmount.ToString("C"), receiptFont, receiptBrush, 245, 215);
+            receipt.DrawString("Tax            " + taxAmount.ToString("C"), receiptFont, receiptBrush, 245, 215);
             registerSound.PlaySync();
             receipt.DrawString("Total         " + grandTotal.ToString("C"), receiptFont, receiptBrush, 245, 235);
             registerSound.PlaySync();
@@ -265,17 +282,6 @@ namespace cashRegisterSummative
             registerSound.PlaySync();
             receipt.DrawString("Have a nice day!", receiptFont, receiptBrush, 245, 335);
             registerSound.PlaySync();
-
-            //make user unable to reprint same receipt, and allows them to clear their receipt
-
-            clearAll();
-            burgerInputBox.Visible = false;
-            burgerDescLabel.Visible = false;
-            friesInputBox.Visible = false;
-            friesDescLabel.Visible = false;
-            drinkInputBox.Visible = false;
-            drinkDescLabel.Visible = false;
-            clearOrderButton.Visible = true;
         }
 
         private void clearOrderButton_Click(object sender, EventArgs e)
@@ -292,6 +298,14 @@ namespace cashRegisterSummative
             subTotalLabel.Text = "$0.00";
             grandTotalLabel.Text = "$0.00";
             clearAll();
+            burgerInputBox.Visible = true;
+            burgerDescLabel.Visible = true;
+            friesInputBox.Visible = true;
+            friesDescLabel.Visible = true;
+            drinkInputBox.Visible = true;
+            drinkDescLabel.Visible = true;
         }
+
+
     }
 }
